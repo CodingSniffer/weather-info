@@ -543,3 +543,113 @@ a:focus, button:focus, input:focus, select:focus{ outline: 3px solid rgba(158,21
     min-height: 44px;
   }
 }
+
+/* Feedback Display Section */
+.feedback-display-section{
+  margin-top: 24px;
+  padding: 18px;
+  background: linear-gradient(180deg, var(--panel-bg), rgba(255,255,255,0.01));
+  border: 1px solid var(--panel-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(var(--glass-blur)) saturate(120%);
+}
+
+.feedback-display-section h2{
+  margin: 0 0 16px 0;
+  color: var(--accent-2);
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.feedback-count{
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.feedback-list{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.feedback-list::-webkit-scrollbar{
+  width: 8px;
+}
+
+.feedback-list::-webkit-scrollbar-thumb{
+  background: rgba(255,255,255,0.12);
+  border-radius: 8px;
+}
+
+.feedback-item{
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 10px;
+  transition: transform var(--transition), background var(--transition);
+}
+
+.feedback-item:hover{
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.03);
+}
+
+.feedback-item-name{
+  font-weight: 600;
+  color: var(--accent-2);
+  margin: 0 0 4px 0;
+  font-size: 0.95rem;
+}
+
+.feedback-item-email{
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0 0 8px 0;
+}
+
+.feedback-item-message{
+  color: var(--temp-color);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0 0 6px 0;
+  word-wrap: break-word;
+}
+
+.feedback-item-time{
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.feedback-empty{
+  text-align: center;
+  color: var(--muted);
+  padding: 24px 12px;
+  font-style: italic;
+}
+
+@media (max-width: 520px){
+  .feedback-display-section{
+    margin-top: 18px;
+    padding: 14px;
+  }
+
+  .feedback-display-section h2{
+    font-size: 1.05rem;
+  }
+
+  .feedback-item{
+    padding: 10px;
+  }
+
+  .feedback-list{
+    max-height: 400px;
+  }
+}
