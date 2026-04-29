@@ -10,13 +10,14 @@
   --accent-2: #cbe6ff;
   --temp-color: #ffffff;
   --muted: rgba(255,255,255,0.7);
-  --card-radius: 16px;
+  --card-radius: 20px;
   --glass-blur: 8px;
-  --shadow-soft: 0 10px 30px rgba(0,0,0,0.45);
-  --map-height: 360px;
+  --shadow-soft: 0 10px 30px rgba(36, 23, 23, 0.45);
+  --map-height: 340px;
+  --map-width: 100%;
+  --map-length: 350px;
   --transition: 240ms cubic-bezier(.2,.9,.3,1);
 }
-
 /* Light-mode fallback (prefers-color-scheme or explicit .theme-day) */
 body.theme-day {
   --bg-0: #f6fbff;
@@ -88,6 +89,7 @@ header p{ margin:4px 0 0 0; color:var(--muted); font-size:0.9rem; }
   max-width:720px;
   margin-left:auto;
   margin-right:auto;
+  min-height: var(--map-height);
 }
 .weather-card h2{ margin-top:0; color:var(--accent); font-weight:600; }
 .temperature{ font-size:2.6rem; font-weight:700; margin:6px 0; color:var(--temp-dynamic); letter-spacing:-0.6px; }
@@ -130,7 +132,7 @@ header p{ margin:4px 0 0 0; color:var(--muted); font-size:0.9rem; }
 /* Forecast list: show 3 items at a time, horizontal scroll to see others */
 .forecast-list{
   list-style:none;
-  margin:0;
+  margin: 10px;
   padding:6px 0 10px 0;
   display:flex;
   gap:12px;
@@ -178,7 +180,7 @@ header p{ margin:4px 0 0 0; color:var(--muted); font-size:0.9rem; }
 }
 
 /* Map card & controls */
-.map-card{ display:flex; flex-direction:column; gap:8px; }
+.map-card{ display:flex; flex-direction:column; gap:5px; }
 #map{ height: var(--map-height); border-radius:12px; overflow:hidden; margin-top:8px; transition: filter var(--transition), height var(--transition); }
 #map-controls{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
 #weather-layer-select, #recent-searches, select{
@@ -318,6 +320,7 @@ a:focus, button:focus, input:focus, select:focus{ outline: 3px solid rgba(158,21
 /* Improved responsive rules (minimal, keeps existing colors) */
 @media (max-width: 900px) {
 	/* stack for tablet / small laptop */
+	--map-height: 380px;
 	.dashboard-grid { grid-template-columns: 1fr; }
 	.map-card { order: 2; }
 	#map { height: 380px; } /* slightly larger map on tablets */
@@ -331,6 +334,7 @@ a:focus, button:focus, input:focus, select:focus{ outline: 3px solid rgba(158,21
 
 @media (max-width: 520px) {
 	/* phone-specific touch-friendly adjustments */
+	--map-height: 460px;
 	.dashboard-grid { grid-template-columns: 1fr; padding: 12px; }
 	.grid-item { padding: 12px; border-radius: 12px; }
 	#map { height: 460px; } /* taller map for phones */
@@ -351,6 +355,9 @@ a:focus, button:focus, input:focus, select:focus{ outline: 3px solid rgba(158,21
 
 /* Portrait: force stacked layout and put map under the weather card */
 @media (orientation: portrait) {
+  :root {
+    --map-height: 48vh;
+  }
   .dashboard-grid {
     grid-template-columns: 1fr; /* single column */
   }
@@ -421,4 +428,118 @@ a:focus, button:focus, input:focus, select:focus{ outline: 3px solid rgba(158,21
   left: 14px !important;
   right: auto !important;
   bottom: auto !important;
+}
+
+/* Feedback Section */
+.feedback-section{
+  margin-top: 24px;
+  padding: 18px;
+  background: linear-gradient(180deg, var(--panel-bg), rgba(255,255,255,0.01));
+  border: 1px solid var(--panel-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(var(--glass-blur)) saturate(120%);
+}
+
+.feedback-section h2{
+  margin: 0 0 16px 0;
+  color: var(--accent-2);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.feedback-form{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.feedback-group{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.feedback-group label{
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.feedback-group input,
+.feedback-group textarea{
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.02);
+  color: var(--temp-color);
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+  font-size: 0.95rem;
+  outline: none;
+  transition: box-shadow var(--transition), background var(--transition);
+}
+
+.feedback-group input:focus,
+.feedback-group textarea:focus{
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.03);
+}
+
+.feedback-submit{
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(90deg, rgba(158,215,255,0.12), rgba(203,230,255,0.06));
+  color: var(--accent-2);
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.feedback-submit:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+  background: linear-gradient(90deg, rgba(158,215,255,0.18), rgba(203,230,255,0.1));
+}
+
+.feedback-status{
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+  min-height: 20px;
+}
+
+.feedback-status.success{
+  background: rgba(76,175,80,0.1);
+  color: #4caf50;
+  border: 1px solid rgba(76,175,80,0.2);
+}
+
+.feedback-status.error{
+  background: rgba(244,67,54,0.1);
+  color: #f44336;
+  border: 1px solid rgba(244,67,54,0.2);
+}
+
+@media (max-width: 520px){
+  .feedback-section{
+    margin-top: 18px;
+    padding: 14px;
+  }
+
+  .feedback-section h2{
+    font-size: 1.05rem;
+  }
+
+  .feedback-group input,
+  .feedback-group textarea{
+    padding: 12px 14px;
+    font-size: 1rem;
+  }
+
+  .feedback-submit{
+    padding: 12px 14px;
+    min-height: 44px;
+  }
 }
