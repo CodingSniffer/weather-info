@@ -630,6 +630,63 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FEEDBACK FORM HANDLER ---
     const feedbackForm = document.getElementById('feedback-form');
     const feedbackStatus = document.getElementById('feedback-status');
+    const feedbackList = document.getElementById('feedback-list');
+    const feedbackCount = document.getElementById('feedback-count');
+
+    // Function to load and display all feedback
+    function loadFeedback() {
+        try {
+            const stored = localStorage.getItem('weather-feedbacks');
+            const feedbacks = stored ? JSON.parse(stored) : [];
+
+            if (feedbackList) {
+                feedbackList.innerHTML = '';
+
+                if (feedbacks.length === 0) {
+                    feedbackList.innerHTML = '<p class="feedback-empty">No feedback yet. Be the first to share your thoughts!</p>';
+                } else {
+                    // Display in reverse order (newest first)
+                    feedbacks.slice().reverse().forEach((fb, idx) => {
+                        const div = document.createElement('div');
+                        div.className = 'feedback-item';
+                        
+                        const date = new Date(fb.timestamp);
+                        const formattedDate = date.toLocaleString();
+                        
+                        div.innerHTML = `
+                            <p class="feedback-item-name">${escapeHtml(fb.name)}</p>
+                            <p class="feedback-item-email">${escapeHtml(fb.email)}</p>
+                            <p class="feedback-item-message">${escapeHtml(fb.message)}</p>
+                            <p class="feedback-item-time">${formattedDate}</p>
+                        `;
+                        feedbackList.appendChild(div);
+                    });
+                }
+
+                // Update count
+                if (feedbackCount) {
+                    feedbackCount.textContent = `(${feedbacks.length})`;
+                }
+            }
+        } catch (err) {
+            console.warn('Error loading feedback:', err);
+        }
+    }
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // Load feedback on page load
+    loadFeedback();
 
     if (feedbackForm) {
         feedbackForm.addEventListener('submit', async (e) => {
@@ -659,6 +716,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 feedbacks.push(feedback);
                 localStorage.setItem('weather-feedbacks', JSON.stringify(feedbacks));
+
+                // Reload feedback display
+                loadFeedback();
 
                 // Show success message
                 feedbackStatus.textContent = '✓ Thank you! Your feedback has been saved.';
