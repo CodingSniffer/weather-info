@@ -72,6 +72,28 @@
                 <div id="map"></div>
             </div>
         </main>
+
+        <!-- Feedback Section -->
+        <section id="feedback-section" class="feedback-section">
+            <h2>Share Your Feedback</h2>
+            <form id="feedback-form" class="feedback-form">
+                <div class="feedback-group">
+                    <label for="feedback-name">Name:</label>
+                    <input type="text" id="feedback-name" name="name" placeholder="Your name" required>
+                </div>
+                <div class="feedback-group">
+                    <label for="feedback-email">Email:</label>
+                    <input type="email" id="feedback-email" name="email" placeholder="Your email" required>
+                </div>
+                <div class="feedback-group">
+                    <label for="feedback-message">Message:</label>
+                    <textarea id="feedback-message" name="message" placeholder="Share your feedback or suggestions..." rows="4" required></textarea>
+                </div>
+                <button type="submit" id="feedback-submit" class="feedback-submit">Submit Feedback</button>
+                <div id="feedback-status" class="feedback-status"></div>
+            </form>
+        </section>
+
         <footer>
             <small>&copy; 2025 India Weather Dashboard</small>
         </footer>
