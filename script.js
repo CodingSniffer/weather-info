@@ -162,6 +162,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let marker = L.marker(DEFAULT_LOCATION.coords, { icon: pulseDivIcon }).addTo(map)
         .bindPopup(`<b>${DEFAULT_LOCATION.name}</b>`);
 
+    // Map click to select location via reverse geocoding
+    map.on('click', async (e) => {
+        const { lat, lng } = e.latlng;
+        try {
+            // Reverse geocode using Nominatim
+            const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+            const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+            if (!res.ok) throw new Error('Reverse geocoding failed');
+            const data = await res.json();
+            const name = data.display_name || data.name || `${lat.toFixed(2)}, ${lng.toFixed(2)}`;
+            selectPlace(name, [lat, lng]);
+        } catch (err) {
+            console.warn('Map click error', err);
+            // Fallback: use coordinates as location name
+            selectPlace(`${lat.toFixed(2)}, ${lng.toFixed(2)}`, [lat, lng]);
+        }
+    });
+
     // --- HELPERS ---
     function showSpinner(show) {
         weatherSpinner.style.display = show ? 'block' : 'none';
@@ -608,4 +626,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.addEventListener('orientationchange', refreshMapLayout);
     window.addEventListener('resize', debounce(refreshMapLayout, 200));
+
+    // --- FEEDBACK FORM HANDLER ---
+    const feedbackForm = document.getElementById('feedback-form');
+    const feedbackStatus = document.getElementById('feedback-status');
+
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('feedback-name').value.trim();
+            const email = document.getElementById('feedback-email').value.trim();
+            const message = document.getElementById('feedback-message').value.trim();
+
+            feedbackStatus.textContent = 'Submitting...';
+            feedbackStatus.className = 'feedback-status';
+
+            try {
+                // Store feedback in localStorage (client-side storage)
+                let feedbacks = [];
+                try {
+                    const stored = localStorage.getItem('weather-feedbacks');
+                    feedbacks = stored ? JSON.parse(stored) : [];
+                } catch (e) { /* ignore */ }
+
+                const feedback = {
+                    name,
+                    email,
+                    message,
+                    timestamp: new Date().toISOString()
+                };
+
+                feedbacks.push(feedback);
+                localStorage.setItem('weather-feedbacks', JSON.stringify(feedbacks));
+
+                // Show success message
+                feedbackStatus.textContent = '✓ Thank you! Your feedback has been saved.';
+                feedbackStatus.className = 'feedback-status success';
+
+                // Reset form
+                feedbackForm.reset();
+
+                // Clear message after 4 seconds
+                setTimeout(() => {
+                    feedbackStatus.textContent = '';
+                    feedbackStatus.className = 'feedback-status';
+                }, 4000);
+            } catch (err) {
+                console.error('Feedback error:', err);
+                feedbackStatus.textContent = '✗ Error saving feedback. Please try again.';
+                feedbackStatus.className = 'feedback-status error';
+                
+                // Clear error message after 4 seconds
+                setTimeout(() => {
+                    feedbackStatus.textContent = '';
+                    feedbackStatus.className = 'feedback-status';
+                }, 4000);
+            }
+        });
+    }
 });
